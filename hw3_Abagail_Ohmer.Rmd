@@ -1,0 +1,66 @@
+---
+title: "DS202_Hw3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+library(classdata)
+data(ames)
+library(ggplot2)
+#1 Explore and explain what is the relationship between the sale price (y) and living area size (x). In your visualization, add a straight line with intercept at 20000 and slope equal to 100. Look at ?geom_abline, and in particular the examples. Remark on any patterns you find and the straight line.
+
+ggplot(data = ames, aes(x = GrLivArea, y = SalePrice)) + geom_point() + geom_abline(slope = 100, intercept = 20000)
+```
+I see a pattern that the more expensive the larger the living area size and that the majority of the points are near the line. There are also some outliers on the scatter plot.
+
+```{r}
+#2 Describe at least two types of anomalies in the previous plot. What do they mean?
+```
+One anomalies in the previous plot is that the points fan out around the point (2000, 2e+05). Another anomalie is that there are several points that are very far from the others (or outliers). For example, the point around (3000, 2e+05)/
+
+```{r}
+#3 Visualize the number of sales by the overall condition. Make sure the conditions are ordered from the best to the worst. What do you find?
+
+cond <- sort(ames$OverallCond, decreasing = TRUE, )
+ggplot(ames, aes(x = cond)) + geom_bar()
+summary(ames$OverallCond)
+```
+You find that most sales are made when Overall Condition equals 5, the mean is 5.575. The maximum Overall Condition is 9 and the minimum overall condition is 1 .
+```{r}
+#4 Introduce a variable houseAge into the data set which stands for the age of the house at the time when it was sold. How does the age of the house affect the sale price?
+
+ames$houseAge <- ames$YrSold - ames$YearBuilt
+ggplot(ames, aes(x = houseAge, y = SalePrice)) + geom_point()
+```
+From the scatterplot we can see that the older the house the lower prices it sold for.
+```{r}
+#5 Were there more sales of nice houses or poor houses? Make sure to state your criterion for a house to be “nice” or otherwise “poor”. Choose an appropriate graph type.
+
+ggplot(ames, aes(x = OverallQual)) + geom_bar()
+
+```
+My nice criteria is OverallQual equal or greater to 6. And the poor criteria is OverallQual is less or equal to 5. From the bar graph we can see that the majority of houses sold are greater than 5. So the majority of houses are nice houses based on their overall quality.
+
+```{r}
+#6 How do the neighborhood and the slope of property affect the relationship between sale price and year built? Focus on the neighborhoods of Brookside, Clear Creek, College Creek, and Somerset only. Find a visualization that incorporates all four variables. Interpret the result.
+
+
+
+dat <- ames[ames$Neighborhood %in% c('ClearCr', 'CollgCr', 'BrkSide', 'Somerst'), ]
+ggplot(dat, aes(x=SalePrice, y=YearBuilt, colour = LandSlope, shape =  Neighborhood)) + geom_point() + facet_grid(~Neighborhood)
+```
+From the plot, we can see that in BrkSide the Glt landslope has lower prices and the age is spread out but tends to be older. In the ClearCr, the Glt landslope has mid range prices, but age varries. The Mod landslope is on the newer houses and doesnt affect the price. The Sev is in the middle for age and price also varries. In the CollgCr, the majority of houses have Gtl, and the prices are usually in the mid range, however the Mod houses tend to be older and less expensive. In Somerst, all the houses are Gtl and very new, with prices tending to be in the medium to high area.
+
+With Glt in BrkSide, the prices and age is lower. In ClearCr. the landslopes dont really affect the price or age since they are all over the palce. In Somerst the landslope is all the same so we dont really see an affect on price/age because they are all new and Glt landslope.
+
+```{r}
+#7 Create a side-by-side histogram showing the sales price for the different types of buildings. Comment on the result.
+
+dat <- ames[ames$BldgType %in% c('1Fam', '2fmCon', 'Duplex', 'TwnhsE'), ]
+ggplot(dat, aes(x = SalePrice), fill = BldgType) + geom_histogram(position = "dodge") + facet_wrap(~BldgType)
+
+```
+From the graph we can that the majority of BldgType is 1Fam. 1Fam is skewed right, with the most SalePrice at about 2e + 04. The duplex has a most SalesPrice at about 1e + 07. 2fmCon has the least amount of this BldgType. Most are sold at about 1e + 05. TwnhsE has most SalePrice at 2e + 03. Overall 1Fam has the highest sales prices but also the lowest. 
